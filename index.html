@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Semester Average Calculator</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        body {
+            padding: 50px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h2 class="mb-4">Semester Average Calculator</h2>
+
+        <form id="averageForm">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Matière</th>
+                        <th>Coefficient</th>
+                        <th>Note</th>
+                    </tr>
+                </thead>
+                <tbody id="subjectRows"></tbody>
+            </table>
+
+            <button type="button" class="btn btn-primary" onclick="calculateAverage()">Calculate Average</button>
+        </form>
+
+        <div class="mt-4" id="result"></div>
+    </div>
+
+    <script>
+        var subjects = [
+            { name: "Mathématiques de l'Ingénieur", coefficient: 2 },
+            { name: "Probabilités et Statistiques", coefficient: 2 },
+            { name: "Fondements de l'Algorithmique & Langage C", coefficient: 3 },
+            { name: "Introduction à la programmation Python", coefficient: 3 },
+            { name: "Initiation au Développement Web", coefficient: 3 },
+            { name: "Outils de travail collaboratif", coefficient: 1 },
+            { name: "Introduction aux Bases de Données", coefficient: 3 },
+            { name: "Conception Orientée Objet", coefficient: 3 },
+            { name: "Principes fondamentaux des Systèmes d'Exploitation", coefficient: 2 },
+            { name: "Préparation à la certification réseaux - CCNA", coefficient: 2 },
+            { name: "anglais", coefficient: 2 },
+            { name: "francais", coefficient: 2 }
+            // Add more subjects as needed
+        ];
+
+        function generateSubjectRows() {
+            var subjectRowsHTML = "";
+            subjects.forEach(function (subject) {
+                subjectRowsHTML += `
+                    <tr>
+                        <td>${subject.name}</td>
+                        <td>${subject.coefficient}</td>
+                        <td><input type="number" step="any" class="form-control" name="${subject.name}" required></td>
+                    </tr>
+                `;
+            });
+            document.getElementById('subjectRows').innerHTML = subjectRowsHTML;
+        }
+
+        function calculateAverage() {
+            var form = document.getElementById('averageForm');
+            var elements = form.elements;
+            var totalPoints = 0;
+            var totalCoefficient = 0;
+
+            for (var i = 0; i < elements.length; i++) {
+                if (elements[i].type === 'number') {
+                    var coefficient = subjects.find(subject => subject.name === elements[i].name).coefficient;
+                    var note = parseFloat(elements[i].value);
+
+                    if (!isNaN(coefficient) && !isNaN(note)) {
+                        totalPoints += coefficient * note;
+                        totalCoefficient += coefficient;
+                    }
+                }
+            }
+
+            if (totalCoefficient > 0) {
+                var average = totalPoints / totalCoefficient;
+                document.getElementById('result').innerHTML = '<h4>Semester Average: ' + average.toFixed(2) + '</h4>';
+            } else {
+                document.getElementById('result').innerHTML = '<p>Please enter valid numeric values.</p>';
+            }
+        }
+
+        // Generate subject rows on page load
+        document.addEventListener('DOMContentLoaded', function () {
+            generateSubjectRows();
+            calculateAverage(); // Display initial average, even if it's 0.00
+        });
+    </script>
+
+</body>
+
+</html>
